@@ -1,0 +1,11 @@
+node_modules/
+.expo/
+dist/
+dist-android/
+coverage/
+.env*
+!.env.example
+android/
+ios/
+*.apk
+expo-env.d.ts
