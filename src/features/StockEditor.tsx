@@ -60,7 +60,7 @@ export function StockEditor({
       footer={
         <>
           {problem ? (
-            <AppText style={{ color: colors.accent, fontSize: 13, flexGrow: 1, alignSelf: "center" }}>
+            <AppText style={{ color: colors.orangeDeep, fontSize: 13, flexGrow: 1, alignSelf: "center" }}>
               {problem}
             </AppText>
           ) : null}

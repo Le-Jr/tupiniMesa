@@ -11,7 +11,7 @@ import {
   useData,
   useStore,
 } from "../../src/data/store";
-import { AppText, Button, Field, Mono, Screen, toast } from "../../src/components/ui";
+import { AppText, Button, Field, LaceDivider, Mono, Paper, Screen, toast } from "../../src/components/ui";
 import { colors, fonts, radius, space } from "../../src/theme/tokens";
 
 export default function HomeScreen() {
@@ -51,9 +51,9 @@ export default function HomeScreen() {
   const eatenTotal = data.plan.filter((e) => e.eaten).length;
 
   return (
-    <Screen crumb="CASA" title="Casa">
-      <View style={styles.section}>
-        <Mono style={{ color: colors.secondary }}>{"> Residência"}</Mono>
+    <Screen crumb="quem come aqui" title={homeName || "Casa"}>
+      <Paper stripe={colors.leaf} eyelet style={styles.section}>
+        <Text style={styles.heading}>🏡 Residência</Text>
         <Field label="Nome" value={name} onChangeText={setName} />
         <View style={{ maxWidth: 180 }}>
           <Field label="Pessoas" value={people} onChangeText={setPeople} keyboardType="number-pad" />
@@ -73,12 +73,12 @@ export default function HomeScreen() {
             }}
           />
         ) : null}
-      </View>
+      </Paper>
 
-      <View style={styles.section}>
-        <Mono style={{ color: colors.secondary }}>{"> Sincronização entre aparelhos"}</Mono>
+      <Paper stripe={colors.orange} eyelet style={styles.section}>
+        <Text style={styles.heading}>🔗 Sincronização entre aparelhos</Text>
         {!cloudConfigured ? (
-          <AppText style={{ color: colors.muted }}>
+          <AppText style={{ color: colors.inkSoft }}>
             Os dados estão salvos só neste aparelho. Para sincronizar web e Android, crie um
             projeto gratuito no Supabase, rode o arquivo supabase/schema.sql e preencha as duas
             chaves do arquivo .env (passo a passo no README). Nada do que você cadastrar agora
@@ -95,7 +95,7 @@ export default function HomeScreen() {
                 Digite este código em “Entrar com código” nos outros aparelhos da família.
               </Text>
             </View>
-            <AppText style={{ color: sync === "offline" ? colors.accent : colors.muted }}>
+            <AppText style={{ color: sync === "offline" ? colors.orangeDeep : colors.inkSoft }}>
               {sync === "offline"
                 ? `Sem sincronizar agora: ${syncError ?? "sem conexão"}. As mudanças ficam guardadas e sobem sozinhas.`
                 : sync === "syncing"
@@ -131,14 +131,14 @@ export default function HomeScreen() {
               />
             </View>
             {confirmLeave ? (
-              <AppText style={{ color: colors.muted }}>
+              <AppText style={{ color: colors.inkSoft }}>
                 Os dados continuam neste aparelho, mas deixam de receber e enviar mudanças.
               </AppText>
             ) : null}
           </>
         ) : (
           <>
-            <AppText style={{ color: colors.muted }}>
+            <AppText style={{ color: colors.inkSoft }}>
               Compartilhe esta residência para usar em outros aparelhos, ou entre numa
               residência que já existe. Ao entrar, o que está neste aparelho é somado ao que já
               existe lá.
@@ -168,6 +168,10 @@ export default function HomeScreen() {
           </>
         )}
         {error ? <AppText style={{ color: colors.danger }}>{error}</AppText> : null}
+      </Paper>
+
+      <View style={{ alignItems: "center", marginTop: space.lg }}>
+        <LaceDivider width={96} />
       </View>
 
       <Text style={styles.signature}>
@@ -187,27 +191,25 @@ function Stat({ n, label }: { n: number; label: string }) {
 }
 
 const styles = StyleSheet.create({
-  section: {
-    gap: space.lg,
-    padding: space.lg,
-    marginBottom: space.lg,
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.line,
-  },
+  section: { gap: space.lg, marginBottom: space.xl },
+  heading: { color: colors.ink, fontFamily: fonts.serif, fontSize: 20 },
   stats: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
   stat: {
     flexGrow: 1,
     flexBasis: 130,
     padding: space.md,
     borderRadius: radius.md,
-    backgroundColor: colors.surfaceRaised,
+    backgroundColor: colors.bgAlt,
+    borderWidth: 1,
+    borderColor: colors.line,
     gap: 2,
   },
-  statN: { color: colors.primary, fontFamily: fonts.pixel, fontSize: 28 },
+  statN: { color: colors.leaf, fontFamily: fonts.serif, fontSize: 30 },
   codeBox: {
-    backgroundColor: colors.paper,
+    backgroundColor: colors.orangeSoft,
+    borderWidth: 2,
+    borderStyle: "dashed",
+    borderColor: colors.orange,
     borderRadius: radius.md,
     padding: space.lg,
     gap: 6,
@@ -218,11 +220,11 @@ const styles = StyleSheet.create({
   actions: { flexDirection: "row", flexWrap: "wrap", gap: space.sm },
   join: { flexDirection: "row", gap: space.sm, alignItems: "flex-end", flexWrap: "wrap" },
   signature: {
-    color: colors.subtle,
+    color: colors.inkFaint,
     fontFamily: fonts.mono,
     fontSize: 11,
     lineHeight: 18,
     textAlign: "center",
-    marginTop: space.lg,
+    marginTop: space.sm,
   },
 });

@@ -15,7 +15,7 @@ import { dayNumber, dowLabel, shortDate } from "../domain/dates";
 import { missingFor } from "../domain/stock";
 import { movePlan, removePlan, setEaten } from "../data/actions";
 import { AppText, Button, Chip, Empty, Mono, Sheet } from "../components/ui";
-import { colors, fonts, mealColors, mealIcons, radius, space } from "../theme/tokens";
+import { colors, fonts, mealColors, mealEmoji, paperShadow, radius, space } from "../theme/tokens";
 
 export function RecipePicker({
   slot,
@@ -55,7 +55,7 @@ export function RecipePicker({
     >
       {options.length === 0 ? (
         <Empty
-          icon={mealIcons[s.meal]}
+          emoji={mealEmoji[s.meal]}
           title={`Nenhuma receita de ${label.toLowerCase()} ainda`}
           body="Crie uma receita marcada para esta refeição e ela aparece aqui para entrar no cardápio."
         />
@@ -137,11 +137,11 @@ export function EntrySheet({
       }
     >
       <View style={styles.meta}>
-        <Chip label={MEAL_LABEL[e.meal]} icon={mealIcons[e.meal]} color={mealColors[e.meal]} selected />
+        <Chip label={`${mealEmoji[e.meal]} ${MEAL_LABEL[e.meal]}`} color={mealColors[e.meal]} selected />
         <Mono>{`${dowLabel(e.date)} ${shortDate(e.date)} · rende ${recipe.servings}`}</Mono>
       </View>
       {e.eaten ? (
-        <AppText style={{ color: colors.secondary }}>
+        <AppText style={{ color: colors.leaf }}>
           Comido. Os ingredientes já saíram do estoque; desfazer devolve tudo.
         </AppText>
       ) : null}
@@ -149,7 +149,7 @@ export function EntrySheet({
       <View style={{ gap: 6 }}>
         <Mono>Ingredientes</Mono>
         {recipe.ingredients.length === 0 ? (
-          <AppText style={{ color: colors.muted }}>Sem ingredientes cadastrados.</AppText>
+          <AppText style={{ color: colors.inkSoft }}>Sem ingredientes cadastrados.</AppText>
         ) : (
           recipe.ingredients.map((ing) => {
             const item = data.stockById[ing.itemId];
@@ -157,10 +157,10 @@ export function EntrySheet({
             return (
               <View key={ing.itemId} style={styles.ing}>
                 <AppText style={{ flex: 1 }}>{item?.name ?? "Item removido"}</AppText>
-                <Mono style={{ color: colors.ivory }}>{formatQty(ing.qty, item?.unit)}</Mono>
+                <Mono style={{ color: colors.ink, fontSize: 12 }}>{formatQty(ing.qty, item?.unit)}</Mono>
                 {e.eaten ? null : (
-                  <Mono style={{ color: short ? colors.accent : colors.subtle, minWidth: 96, textAlign: "right" }}>
-                    {short ? "! " : ""}tem {formatQty(item?.qty ?? 0, item?.unit)}
+                  <Mono style={{ color: short ? colors.orangeDeep : colors.inkFaint, minWidth: 96, textAlign: "right" }}>
+                    {short ? "só " : ""}tem {formatQty(item?.qty ?? 0, item?.unit)}
                   </Mono>
                 )}
               </View>
@@ -192,8 +192,7 @@ export function EntrySheet({
           {MEALS.filter((m) => recipe.meals.includes(m)).map((m) => (
             <Chip
               key={m}
-              label={MEAL_LABEL[m]}
-              icon={mealIcons[m]}
+              label={`${mealEmoji[m]} ${MEAL_LABEL[m]}`}
               color={mealColors[m]}
               selected={m === e.meal}
               onPress={() => move(e.date, m)}
@@ -212,8 +211,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: space.md,
     padding: space.md,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     backgroundColor: colors.paper,
+    borderWidth: 1,
+    borderColor: colors.line,
+    ...paperShadow,
   },
   optionName: { color: colors.ink, fontFamily: fonts.serif, fontSize: 17 },
   meta: { flexDirection: "row", alignItems: "center", gap: space.md, flexWrap: "wrap" },
@@ -227,9 +229,13 @@ const styles = StyleSheet.create({
   },
   paper: {
     backgroundColor: colors.paper,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.line,
     padding: space.lg,
     gap: space.sm,
+    transform: [{ rotate: "-0.5deg" }],
+    ...paperShadow,
   },
   paperTitle: { color: colors.ink, fontFamily: fonts.serif, fontSize: 17 },
   paperText: { color: colors.ink, fontFamily: fonts.body, fontSize: 15, lineHeight: 23 },

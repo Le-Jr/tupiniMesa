@@ -36,7 +36,7 @@ import {
 import { dayNumber, dowLabel, today, weekDays } from "../domain/dates";
 import { missingFor } from "../domain/stock";
 import { movePlan, setEaten } from "../data/actions";
-import { colors, fonts, mealColors, mealIcons, radius } from "../theme/tokens";
+import { colors, fonts, mealColors, mealEmoji, radius } from "../theme/tokens";
 import { toast } from "../components/ui";
 import { cardXY, colX, locate, metrics, zoneY, type Metrics } from "./layout";
 import { makeRope, ropePath, stepRope, type RopeState } from "./rope";
@@ -330,13 +330,16 @@ function DayColumn({
         <Text
           accessibilityRole="header"
           accessibilityLabel={`${dowLabel(date)} ${dayNumber(date)}${isToday ? ", hoje" : ""}`}
-          style={[styles.dow, isToday && { color: colors.primary }]}
+          style={styles.dow}
         >
-          {isToday ? ">_ HOJE" : dowLabel(date)}
+          {dowLabel(date)}
         </Text>
-        <Text style={[styles.dayNum, isToday && { color: colors.primary }]}>
-          {dayNumber(date)}
-        </Text>
+        <Text style={styles.dayNum}>{dayNumber(date)}</Text>
+        {isToday ? (
+          <View style={styles.todayBadge}>
+            <Text style={styles.todayText}>hoje</Text>
+          </View>
+        ) : null}
         <View style={{ flex: 1 }} />
         <View style={{ alignItems: "flex-end", gap: 4 }}>
           <Text style={styles.count}>
@@ -354,10 +357,9 @@ function DayColumn({
           style={[styles.zone, { top: zoneY(m, k), height: m.zoneH }]}
         >
           <View style={[styles.zoneLabel, { height: m.labelH }]}>
-            <Ionicons name={mealIcons[meal]} size={13} color={mealColors[meal]} />
-            <Text style={[styles.zoneText, { color: mealColors[meal] }]}>
-              {MEAL_LABEL[meal]}
-            </Text>
+            <View style={[styles.zoneDot, { backgroundColor: mealColors[meal] }]} />
+            <Text style={{ fontSize: 13 }}>{mealEmoji[meal]}</Text>
+            <Text style={styles.zoneText}>{MEAL_LABEL[meal]}</Text>
             <View style={{ flex: 1 }} />
             <Pressable
               accessibilityRole="button"
@@ -366,7 +368,7 @@ function DayColumn({
               onPress={() => onAdd(date, meal)}
               style={({ pressed }) => [styles.add, pressed && { opacity: 0.6 }]}
             >
-              <Ionicons name="add" size={16} color={colors.primary} />
+              <Ionicons name="add" size={16} color={colors.orangeDeep} />
             </Pressable>
           </View>
         </View>
@@ -463,7 +465,7 @@ const Card = React.memo(function Card({
         { scale: held ? 1.06 : 1 },
       ],
       zIndex: held ? 50 : 1,
-      shadowOpacity: held ? 0.55 : 0.3,
+      shadowOpacity: held ? 0.34 : 0.16,
     };
   });
 
@@ -604,15 +606,23 @@ const styles = StyleSheet.create({
   column: {
     position: "absolute",
     top: 0,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.bgAlt,
     borderRadius: radius.lg,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colors.line,
   },
   columnToday: {
-    borderColor: colors.primary,
-    backgroundColor: "#0E2A20",
+    borderColor: colors.orange,
+    backgroundColor: "#FFF7EA",
   },
+  todayBadge: {
+    backgroundColor: colors.orange,
+    borderRadius: 999,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  todayText: { color: colors.ink, fontFamily: fonts.bold, fontSize: 11 },
+  zoneDot: { width: 8, height: 8, borderRadius: 4 },
   dayHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -621,28 +631,28 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   dow: {
-    color: colors.muted,
+    color: colors.inkSoft,
     fontFamily: fonts.mono,
     fontSize: 11,
     letterSpacing: 1.2,
   },
-  dayNum: { color: colors.ivory, fontFamily: fonts.pixel, fontSize: 24 },
-  count: { color: colors.muted, fontFamily: fonts.mono, fontSize: 10 },
+  dayNum: { color: colors.ink, fontFamily: fonts.serif, fontSize: 26 },
+  count: { color: colors.inkSoft, fontFamily: fonts.mono, fontSize: 10 },
   bar: {
     width: 56,
-    height: 4,
-    borderRadius: 2,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: colors.line,
     overflow: "hidden",
   },
-  barFill: { height: 4, backgroundColor: colors.primary },
+  barFill: { height: 6, borderRadius: 3, backgroundColor: colors.leaf },
   eyelet: {
     width: 14,
     height: 14,
     borderRadius: 7,
     borderWidth: 2.5,
     borderColor: colors.brass,
-    backgroundColor: colors.background,
+    backgroundColor: colors.ink,
   },
   headerEyelet: { position: "absolute", bottom: 6, left: "50%", marginLeft: -7 },
   zone: {
@@ -660,17 +670,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   zoneText: {
+    color: colors.inkSoft,
     fontFamily: fonts.mono,
     fontSize: 10.5,
     letterSpacing: 1.2,
     textTransform: "uppercase",
   },
   add: {
-    width: 24,
-    height: 24,
-    borderRadius: 7,
-    borderWidth: 1,
-    borderColor: colors.lineStrong,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.orangeSoft,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -679,21 +689,21 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     backgroundColor: colors.paper,
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: colors.paperShade,
+    borderColor: colors.line,
     paddingLeft: 14,
     paddingRight: 8,
     paddingVertical: 8,
     justifyContent: "space-between",
     overflow: "hidden",
-    shadowColor: "#000",
+    shadowColor: "#36452A",
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 5 },
     elevation: 4,
     ...(Platform.OS === "web" ? { cursor: "grab", userSelect: "none" } : null),
   },
-  cardEaten: { backgroundColor: "#DCE9CF", borderColor: "#C3D6B2" },
+  cardEaten: { backgroundColor: colors.eaten, borderColor: "#C3D6B2" },
   stripe: { position: "absolute", left: 0, top: 0, bottom: 0, width: 6 },
   cardEyelet: {
     position: "absolute",

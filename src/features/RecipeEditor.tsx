@@ -16,7 +16,7 @@ import {
 import { deleteRecipe, saveRecipe, saveStock } from "../data/actions";
 import { appendPhrase, useDictation } from "../services/voice";
 import { AppText, Button, Chip, Field, IconButton, Mono, Sheet, toast } from "../components/ui";
-import { colors, fonts, mealColors, mealIcons, radius, space } from "../theme/tokens";
+import { colors, fonts, mealColors, mealEmoji, radius, space } from "../theme/tokens";
 
 const EMOJIS = ["🍲", "🍰", "🥖", "🥗", "🍝", "🍚", "🥘", "🍳", "🥪", "🍌", "☕", "🧃", "🍗", "🐟", "🥞", "🍕"];
 
@@ -174,8 +174,7 @@ export function RecipeEditor({
           {MEALS.map((m) => (
             <Chip
               key={m}
-              label={MEAL_LABEL[m]}
-              icon={mealIcons[m]}
+              label={`${mealEmoji[m]} ${MEAL_LABEL[m]}`}
               color={mealColors[m]}
               selected={meals.includes(m)}
               onPress={() =>
@@ -214,14 +213,14 @@ export function RecipeEditor({
                 }
                 keyboardType="decimal-pad"
                 placeholder="0"
-                placeholderTextColor={colors.subtle}
+                placeholderTextColor={colors.inkFaint}
                 style={styles.qty}
               />
               <Mono style={{ width: 26 }}>{item ? UNIT_LABEL[item.unit] : ""}</Mono>
               <IconButton
                 icon="close-circle-outline"
                 label={`Tirar ${item?.name ?? "item"}`}
-                color={colors.muted}
+                color={colors.inkSoft}
                 onPress={() => setRows((r) => r.filter((_, k) => k !== i))}
               />
             </View>
@@ -240,7 +239,7 @@ export function RecipeEditor({
         </View>
         {query && !exact ? (
           <View style={styles.newItem}>
-            <AppText style={{ color: colors.muted }}>
+            <AppText style={{ color: colors.inkSoft }}>
               “{search.trim()}” não está no estoque. Criar medido em:
             </AppText>
             <View style={styles.wrap}>
@@ -271,10 +270,10 @@ export function RecipeEditor({
               <Ionicons
                 name={listening ? "stop" : "mic"}
                 size={16}
-                color={listening ? colors.onPrimary : colors.accent}
+                color={listening ? colors.ink : colors.orangeDeep}
               />
               <Text
-                style={[styles.micText, listening && { color: colors.onPrimary }]}
+                style={[styles.micText, listening && { color: colors.ink }]}
               >
                 {listening ? "Parar" : "Ditar"}
               </Text>
@@ -290,7 +289,7 @@ export function RecipeEditor({
           placeholder={"Misture os secos, junte os ovos e o leite…"}
         />
         {listening ? (
-          <Mono style={{ color: colors.accent }} accessibilityLiveRegion="polite">
+          <Mono style={{ color: colors.orangeDeep }} accessibilityLiveRegion="polite">
             {`● ouvindo… ${dictation.interim}`}
           </Mono>
         ) : null}
@@ -298,7 +297,7 @@ export function RecipeEditor({
           <AppText style={{ color: colors.danger }}>{dictation.error}</AppText>
         ) : null}
         {!dictation.supported ? (
-          <AppText style={{ color: colors.subtle, fontSize: 13 }}>
+          <AppText style={{ color: colors.inkFaint, fontSize: 13 }}>
             O ditado por voz não está disponível neste navegador ou nesta versão do app.
           </AppText>
         ) : null}
@@ -317,25 +316,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: colors.line,
+    backgroundColor: colors.paper,
   },
-  emojiOn: { borderColor: colors.accent, backgroundColor: "#FFB34726" },
+  emojiOn: { borderColor: colors.orange, backgroundColor: colors.orangeSoft, borderWidth: 2 },
   row: {
     flexDirection: "row",
     alignItems: "center",
     gap: space.sm,
     paddingLeft: space.md,
     borderRadius: radius.md,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.paper,
   },
   qty: {
     width: 76,
     minHeight: 40,
     textAlign: "right",
-    color: colors.ivory,
+    color: colors.ink,
     fontFamily: fonts.mono,
     fontSize: 15,
     borderBottomWidth: 1,
     borderBottomColor: colors.lineStrong,
+    borderStyle: "dashed",
     paddingHorizontal: 6,
   },
   newItem: {
@@ -354,10 +355,11 @@ const styles = StyleSheet.create({
     minHeight: 36,
     paddingHorizontal: space.md,
     borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.accent,
+    backgroundColor: colors.orangeSoft,
+    borderWidth: 1.5,
+    borderColor: colors.orange,
   },
-  micOn: { backgroundColor: colors.accent },
-  micText: { color: colors.accent, fontFamily: fonts.bold, fontSize: 13 },
-  problem: { color: colors.accent, fontSize: 13, flexGrow: 1, alignSelf: "center" },
+  micOn: { backgroundColor: colors.orange },
+  micText: { color: colors.orangeDeep, fontFamily: fonts.bold, fontSize: 13 },
+  problem: { color: colors.orangeDeep, fontSize: 13, flexGrow: 1, alignSelf: "center" },
 });

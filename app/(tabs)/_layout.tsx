@@ -15,14 +15,15 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.subtle,
+        tabBarActiveTintColor: colors.orangeDeep,
+        tabBarInactiveTintColor: colors.inkFaint,
         tabBarStyle: {
-          backgroundColor: colors.surface,
+          backgroundColor: colors.paper,
           borderTopColor: colors.line,
+          borderTopWidth: 1.5,
         },
         tabBarLabelStyle: { fontFamily: fonts.medium, fontSize: 11 },
-        sceneStyle: { backgroundColor: colors.background },
+        sceneStyle: { backgroundColor: colors.bg },
       }}
     >
       <Tabs.Screen name="index" options={{ title: "Cardápio", tabBarIcon: icon("calendar") }} />

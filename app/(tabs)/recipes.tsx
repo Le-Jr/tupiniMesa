@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { MEALS, MEAL_LABEL, type Meal, type Recipe } from "../../src/domain/model";
 import { missingFor } from "../../src/domain/stock";
 import { useData } from "../../src/data/store";
 import { RecipeEditor } from "../../src/features/RecipeEditor";
-import { Button, Chip, Empty, Mono, Screen } from "../../src/components/ui";
-import { colors, fonts, mealColors, mealIcons, radius, space } from "../../src/theme/tokens";
+import { Button, Chip, Empty, Mono, Paper, Screen } from "../../src/components/ui";
+import { colors, fonts, mealColors, mealEmoji, radius, space } from "../../src/theme/tokens";
 
 export default function RecipesScreen() {
   const data = useData();
@@ -21,7 +21,7 @@ export default function RecipesScreen() {
 
   return (
     <Screen
-      crumb="RECEITAS"
+      crumb={`${data.recipes.length} no caderno`}
       title="Receitas"
       actions={<Button title="Nova receita" icon="add" small onPress={() => edit()} />}
     >
@@ -30,8 +30,7 @@ export default function RecipesScreen() {
         {MEALS.map((m) => (
           <Chip
             key={m}
-            label={MEAL_LABEL[m]}
-            icon={mealIcons[m]}
+            label={`${mealEmoji[m]} ${MEAL_LABEL[m]}`}
             color={mealColors[m]}
             selected={filter === m}
             onPress={() => setFilter(filter === m ? null : m)}
@@ -41,22 +40,24 @@ export default function RecipesScreen() {
 
       {list.length === 0 ? (
         <Empty
-          icon="book-outline"
+          emoji="📖"
           title={filter ? `Nenhuma receita de ${MEAL_LABEL[filter].toLowerCase()}` : "Nenhuma receita ainda"}
           body="Monte uma receita com os ingredientes do estoque. O modo de preparo pode ser ditado por voz."
           action={<Button title="Criar receita" icon="add" onPress={() => edit()} />}
         />
       ) : (
         <View style={styles.grid}>
-          {list.map((r) => {
+          {list.map((r, i) => {
             const missing = missingFor(r, data.stockById);
             return (
-              <Pressable
+              <Paper
                 key={r.id}
-                accessibilityRole="button"
                 accessibilityLabel={`Editar ${r.name}`}
                 onPress={() => edit(r)}
-                style={({ pressed }) => [styles.card, pressed && { opacity: 0.8 }]}
+                stripe={mealColors[r.meals[0] ?? "almoco"]}
+                eyelet
+                tilt={((i % 3) - 1) * 0.8}
+                style={styles.card}
               >
                 <View style={styles.cardHead}>
                   <Text style={{ fontSize: 30 }}>{r.emoji}</Text>
@@ -66,8 +67,8 @@ export default function RecipesScreen() {
                 </View>
                 <View style={styles.meals}>
                   {r.meals.map((m) => (
-                    <View key={m} style={[styles.tag, { backgroundColor: `${mealColors[m]}33` }]}>
-                      <Text style={styles.tagText}>{MEAL_LABEL[m]}</Text>
+                    <View key={m} style={[styles.tag, { backgroundColor: `${mealColors[m]}44` }]}>
+                      <Text style={styles.tagText}>{`${mealEmoji[m]} ${MEAL_LABEL[m]}`}</Text>
                     </View>
                   ))}
                 </View>
@@ -79,9 +80,9 @@ export default function RecipesScreen() {
                     ? `! falta ${missing
                         .map((x) => data.stockById[x.itemId]?.name ?? "item")
                         .join(", ")}`
-                    : "dá para fazer hoje"}
+                    : "✓ dá para fazer hoje"}
                 </Mono>
-              </Pressable>
+              </Paper>
             );
           })}
         </View>
@@ -99,16 +100,8 @@ export default function RecipesScreen() {
 
 const styles = StyleSheet.create({
   filters: { flexDirection: "row", flexWrap: "wrap", gap: space.sm, marginBottom: space.lg },
-  grid: { flexDirection: "row", flexWrap: "wrap", gap: space.md },
-  card: {
-    flexGrow: 1,
-    flexBasis: 260,
-    maxWidth: 480,
-    backgroundColor: colors.paper,
-    borderRadius: radius.lg,
-    padding: space.lg,
-    gap: space.sm,
-  },
+  grid: { flexDirection: "row", flexWrap: "wrap", gap: space.lg },
+  card: { flexGrow: 1, flexBasis: 260, maxWidth: 480 },
   cardHead: { flexDirection: "row", alignItems: "center", gap: space.md },
   name: { flex: 1, color: colors.ink, fontFamily: fonts.serif, fontSize: 19, lineHeight: 23 },
   meals: { flexDirection: "row", flexWrap: "wrap", gap: 6 },

@@ -5,12 +5,14 @@
     "version": "1.0.0",
     "scheme": "tupinimesa",
     "orientation": "default",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "icon": "./assets/images/icon.png",
-    "backgroundColor": "#071A14",
+    "backgroundColor": "#E9EEDC",
     "android": {
       "package": "com.tupinicode.tupinimesa",
-      "permissions": ["android.permission.RECORD_AUDIO"],
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-foreground.png",
         "backgroundColor": "#071A14"
@@ -25,7 +27,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#071A14"
+          "backgroundColor": "#E9EEDC"
         }
       ],
       [
@@ -33,7 +35,9 @@
         {
           "microphonePermission": "O TupiniMesa usa o microfone para você ditar o modo de preparo das receitas.",
           "speechRecognitionPermission": "O TupiniMesa converte a sua fala em texto no modo de preparo.",
-          "androidSpeechServicePackages": ["com.google.android.googlequicksearchbox"]
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
         }
       ]
     ],
@@ -44,9 +48,11 @@
       "name": "TupiniMesa",
       "shortName": "TupiniMesa",
       "lang": "pt-BR",
-      "themeColor": "#071A14",
-      "backgroundColor": "#071A14"
+      "themeColor": "#E9EEDC",
+      "backgroundColor": "#E9EEDC"
     },
-    "experiments": { "typedRoutes": true }
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

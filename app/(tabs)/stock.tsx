@@ -12,9 +12,10 @@ import { isLow, shoppingList } from "../../src/domain/stock";
 import { adjustStock } from "../../src/data/actions";
 import { useData } from "../../src/data/store";
 import { StockEditor } from "../../src/features/StockEditor";
-import { AppText, Button, Empty, IconButton, Mono, Screen } from "../../src/components/ui";
-import { colors, fonts, radius, space } from "../../src/theme/tokens";
+import { AppText, Button, Empty, IconButton, Mono, Paper, Screen } from "../../src/components/ui";
+import { colors, fonts, paperShadow, radius, space } from "../../src/theme/tokens";
 
+const PLACE_EMOJI = { despensa: "🫙", geladeira: "🧊", freezer: "❄️", hortifruti: "🥬" } as const;
 const STEP: Record<Unit, number> = { un: 1, g: 50, kg: 0.25, ml: 100, l: 0.25 };
 
 export default function StockScreen() {
@@ -39,13 +40,13 @@ export default function StockScreen() {
 
   return (
     <Screen
-      crumb="ESTOQUE"
+      crumb={`${data.stock.length} ${data.stock.length === 1 ? "item" : "itens"} em casa`}
       title="Estoque"
       actions={<Button title="Novo item" icon="add" small onPress={() => edit()} />}
     >
       {shopping.length > 0 ? (
-        <View style={styles.shopping}>
-          <Text style={styles.shoppingTitle}>Falta para o cardápio planejado</Text>
+        <Paper stripe={colors.orange} eyelet tilt={-0.4} style={{ marginBottom: space.xl }}>
+          <Text style={styles.shoppingTitle}>🛒 Falta para o cardápio</Text>
           {shopping.map((line) => {
             const item = data.stockById[line.itemId];
             return (
@@ -60,12 +61,12 @@ export default function StockScreen() {
           <Text style={styles.shoppingNote}>
             Soma de tudo que ainda não foi comido de hoje em diante, menos o que há em casa.
           </Text>
-        </View>
+        </Paper>
       ) : null}
 
       {data.stock.length === 0 ? (
         <Empty
-          icon="basket-outline"
+          emoji="🧺"
           title="Estoque vazio"
           body="Cadastre o que há na despensa, na geladeira e no freezer, com a quantidade de cada item. As receitas usam esses itens como ingredientes."
           action={<Button title="Cadastrar item" icon="add" onPress={() => edit()} />}
@@ -76,7 +77,7 @@ export default function StockScreen() {
           if (items.length === 0) return null;
           return (
             <View key={place} style={{ marginBottom: space.xl, gap: space.sm }}>
-              <Mono style={{ color: colors.secondary }}>{`> ${PLACE_LABEL[place]} (${items.length})`}</Mono>
+              <Text style={styles.place}>{`${PLACE_EMOJI[place]} ${PLACE_LABEL[place]}`}</Text>
               {items.map((item) => {
                 const low = isLow(item);
                 return (
@@ -89,21 +90,23 @@ export default function StockScreen() {
                     >
                       <AppText numberOfLines={1}>{item.name}</AppText>
                       {low ? (
-                        <Mono style={{ color: colors.accent }}>
-                          {item.qty <= 0 ? "! acabou" : "! acabando"}
+                        <Mono style={{ color: colors.orangeDeep }}>
+                          {item.qty <= 0 ? "acabou" : "acabando"}
                         </Mono>
                       ) : null}
                     </Pressable>
                     <IconButton
                       icon="remove"
+                      filled
                       label={`Diminuir ${item.name}`}
                       onPress={() => adjustStock(item.id, -STEP[item.unit])}
                     />
-                    <Text style={[styles.qty, low && { color: colors.accent }]}>
+                    <Text style={[styles.qty, low && { color: colors.orangeDeep }]}>
                       {formatQty(item.qty, item.unit)}
                     </Text>
                     <IconButton
                       icon="add"
+                      filled
                       label={`Aumentar ${item.name}`}
                       onPress={() => adjustStock(item.id, STEP[item.unit])}
                     />
@@ -126,22 +129,14 @@ export default function StockScreen() {
 }
 
 const styles = StyleSheet.create({
-  shopping: {
-    backgroundColor: colors.paper,
-    borderRadius: radius.lg,
-    padding: space.lg,
-    gap: space.sm,
-    marginBottom: space.xl,
-    borderLeftWidth: 6,
-    borderLeftColor: colors.orange,
-  },
+  place: { color: colors.ink, fontFamily: fonts.serif, fontSize: 18, marginTop: 2 },
   shoppingTitle: { color: colors.ink, fontFamily: fonts.serif, fontSize: 19 },
   shoppingRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     gap: space.md,
     borderBottomWidth: 1,
-    borderBottomColor: colors.paperShade,
+    borderBottomColor: colors.line,
     paddingVertical: 6,
   },
   shoppingName: { color: colors.ink, fontFamily: fonts.medium, fontSize: 15, flex: 1 },
@@ -152,18 +147,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 4,
     paddingLeft: space.lg,
-    paddingRight: 4,
-    paddingVertical: 4,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
+    paddingRight: 8,
+    paddingVertical: 6,
+    backgroundColor: colors.paper,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.line,
+    borderLeftWidth: 8,
+    borderLeftColor: colors.leafSoft,
+    ...paperShadow,
   },
-  rowLow: { borderColor: colors.accent },
+  rowLow: { borderLeftColor: colors.orange },
   qty: {
     minWidth: 78,
     textAlign: "center",
-    color: colors.ivory,
+    color: colors.ink,
     fontFamily: fonts.mono,
     fontSize: 15,
   },

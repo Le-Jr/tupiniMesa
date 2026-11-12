@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { Meal } from "../../src/domain/model";
 import { addDays, today, weekDays, weekLabel, weekStart } from "../../src/domain/dates";
@@ -9,8 +9,8 @@ import { Board } from "../../src/board/Board";
 import { spot } from "../../src/board/layout";
 import { EntrySheet, RecipePicker } from "../../src/features/PlanSheets";
 import { RecipeEditor } from "../../src/features/RecipeEditor";
-import { IconButton, Mono, PixelTitle } from "../../src/components/ui";
-import { colors, space } from "../../src/theme/tokens";
+import { IconButton, LaceDivider, Mono, Title } from "../../src/components/ui";
+import { colors, fonts, paperShadow, radius, space } from "../../src/theme/tokens";
 
 export default function MenuScreen() {
   const insets = useSafeAreaInsets();
@@ -27,13 +27,14 @@ export default function MenuScreen() {
   const isThisWeek = start === weekStart(today());
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: colors.bg, paddingTop: insets.top }}>
       <View style={styles.header}>
         <View style={{ flex: 1, minWidth: 200, gap: 4 }}>
-          <Mono style={{ color: colors.secondary }}>
-            {`>_ ${data.home?.name ?? "TupiniMesa"} / ${sync === "local" ? "só neste aparelho" : sync === "offline" ? "offline" : "sincronizado"}`}
+          <Mono style={{ color: colors.inkFaint }} numberOfLines={1}>
+            {`${data.home?.name ?? "TupiniMesa"} · ${sync === "local" ? "só neste aparelho" : sync === "offline" ? "offline" : "sincronizado"}`}
           </Mono>
-          <PixelTitle>Cardápio</PixelTitle>
+          <Title>Cardápio</Title>
+          <LaceDivider />
         </View>
         <View style={styles.nav}>
           <IconButton
@@ -42,7 +43,7 @@ export default function MenuScreen() {
             onPress={() => setStart((s) => addDays(s, -7))}
           />
           <View style={{ alignItems: "center", minWidth: 132 }}>
-            <Mono style={{ color: colors.ivory }}>{weekLabel(start)}</Mono>
+            <Text style={styles.week}>{weekLabel(start)}</Text>
             <Mono>
               {week.length ? `${eaten}/${week.length} comidos` : "nada planejado"}
             </Mono>
@@ -56,7 +57,7 @@ export default function MenuScreen() {
             <IconButton
               icon="today-outline"
               label="Voltar para esta semana"
-              color={colors.accent}
+              color={colors.orangeDeep}
               onPress={() => setStart(weekStart(today()))}
             />
           )}
@@ -108,11 +109,22 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     flexWrap: "wrap",
-    alignItems: "flex-end",
+    alignItems: "center",
     gap: space.md,
     paddingHorizontal: space.lg,
     paddingTop: space.lg,
     paddingBottom: space.md,
   },
-  nav: { flexDirection: "row", alignItems: "center", gap: 2 },
+  nav: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+    backgroundColor: colors.paper,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.line,
+    paddingHorizontal: 4,
+    ...paperShadow,
+  },
+  week: { color: colors.ink, fontFamily: fonts.serif, fontSize: 15 },
 });

@@ -32,18 +32,18 @@ function Shell() {
   }, [ready]);
   if (!ready)
     return (
-      <View style={{ flex: 1, backgroundColor: colors.background, justifyContent: "center" }}>
-        <ActivityIndicator color={colors.primary} />
+      <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: "center" }}>
+        <ActivityIndicator color={colors.leaf} />
       </View>
     );
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <StatusBar style="light" />
+    <View style={{ flex: 1, backgroundColor: colors.bg }}>
+      <StatusBar style="dark" />
       {onboarded ? (
         <Stack
           screenOptions={{
             headerShown: false,
-            contentStyle: { backgroundColor: colors.background },
+            contentStyle: { backgroundColor: colors.bg },
           }}
         />
       ) : (
@@ -71,7 +71,7 @@ export default function RootLayout() {
     Fraunces: Fraunces_600SemiBold,
   });
   if (!loaded && !error)
-    return <View style={{ flex: 1, backgroundColor: colors.background }} />;
+    return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>

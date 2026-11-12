@@ -2,7 +2,7 @@
 
 Planejamento alimentar da família: residência, estoque, receitas e o cardápio da semana — web e Android, com os mesmos dados nos dois.
 
-Expo SDK 55 / React Native / TypeScript. Visual: Tupinicode (selva escura, verde terminal, título pixel) + Granjeando Talentos (papel marfim, verde serifado, laranja do regador nos cadarços).
+Expo SDK 55 / React Native / TypeScript. Visual "caderno de receitas": papel claro, títulos serifados, faixa colorida por refeição, ilhós de latão e o cadarço laranja do regador do Granjeando Talentos; o Tupinicode assina em pixel no rodapé.
 
 ## O que faz
 
